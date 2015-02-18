@@ -3,7 +3,6 @@ package com.codepath.apps.mysimpletweets;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.text.Html;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -14,12 +13,10 @@ import android.widget.Toast;
 
 import com.codepath.apps.mysimpletweets.models.Profile;
 import com.codepath.apps.mysimpletweets.models.Tweet;
-import com.codepath.apps.mysimpletweets.models.User;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.squareup.picasso.Picasso;
 
 import org.apache.http.Header;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class TweetActivity extends ActionBarActivity {
@@ -30,7 +27,6 @@ public class TweetActivity extends ActionBarActivity {
     private TwitterClient myclient;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,7 +35,7 @@ public class TweetActivity extends ActionBarActivity {
         myclient = TwitterApplication.getRestClient();
         android.support.v7.app.ActionBar ab = getSupportActionBar();
         ab.setDisplayShowHomeEnabled(true);
-        ab.setIcon(R.drawable.ic_ticon);
+        ab.setIcon(R.drawable.ic_logo);
         getProfileImage();
 
     }
@@ -54,7 +50,7 @@ public class TweetActivity extends ActionBarActivity {
     }
 
 
-    public void getProfileImage(){
+    public void getProfileImage() {
         myclient.getUserProfile(new JsonHttpResponseHandler() {
 
 
@@ -75,9 +71,6 @@ public class TweetActivity extends ActionBarActivity {
         });
 
     }
-
-
-
 
 
     @Override

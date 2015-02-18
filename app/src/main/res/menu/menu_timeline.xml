@@ -6,11 +6,18 @@
     <item
         android:id="@+id/action_tweet"
         android:icon="@drawable/ic_tweeter2"
-        app:showAsAction="ifRoom"
+        android:orderInCategory="2"
         android:title="@string/tweet"
-
+        app:showAsAction="ifRoom"
         >
     </item>
+    <item
+        android:id="@+id/imProfile"
+        android:icon="@drawable/ic_prof"
+        android:onClick="onProfileView"
+        android:orderInCategory="1"
+        android:title="@string/Profile"
+        app:showAsAction="ifRoom"></item>
 
 
 </menu>

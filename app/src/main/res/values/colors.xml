@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="transparent"> #FFFFFF</color>
-    <color name="tab_highlight">#00aced</color>
+    <color name="tbg">#f5f8fa</color>
+    <color name="transparent">#FFFFFF</color>
+    <color name="tab_highlight">#55acee</color>
     <color name="sa_green">#FF30E2FF</color>
     <color name="stacked_green">#00aced</color>
     <color name="accent_green">#FF30E2FF</color>

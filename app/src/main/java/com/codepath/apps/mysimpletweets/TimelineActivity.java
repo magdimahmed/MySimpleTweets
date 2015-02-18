@@ -1,87 +1,50 @@
 package com.codepath.apps.mysimpletweets;
 
 import android.content.Intent;
-import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.ActionBarActivity;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.text.format.DateUtils;
-import android.util.Log;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ListView;
 
-import com.codepath.apps.mysimpletweets.R;
-import com.codepath.apps.mysimpletweets.models.Tweet;
+import com.astuetz.PagerSlidingTabStrip;
+import com.codepath.apps.mysimpletweets.fragments.HomeTimeLineFragment;
+import com.codepath.apps.mysimpletweets.fragments.MentionsTimeLineFragment;
 import com.codepath.apps.mysimpletweets.models.User;
-import com.loopj.android.http.JsonHttpResponseHandler;
-
-import org.apache.http.Header;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Locale;
 
 public class TimelineActivity extends ActionBarActivity {
-     private ArrayList<Tweet> tweets;
-    private TweetArrayAdapter atweet;
-    private TwitterClient myclient;
-    ListView lvTweet;
-    private SwipeRefreshLayout swipeContainer;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_timeline);
-        lvTweet = (ListView) findViewById(R.id.lvTweets);
-        tweets = new ArrayList<Tweet>();
-        atweet = new TweetArrayAdapter(this,tweets);
-        lvTweet.setAdapter(atweet);
-        myclient = TwitterApplication.getRestClient();
-        ActionBar ab =getSupportActionBar();
+
+        android.support.v7.app.ActionBar ab = getSupportActionBar();
         ab.setDisplayShowHomeEnabled(true);
-        ab.setIcon(R.drawable.ic_ticon);
-        populateTimeLine();
-        swipeContainer = (SwipeRefreshLayout) findViewById(R.id.swipeContainer);
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
+        ab.setIcon(R.drawable.ic_logo);
 
-        swipeContainer.setRefreshing(false);
+        //get view pager
+        ViewPager vpPager = (ViewPager) findViewById(R.id.viewpager);
+        //set viewpager adapter
+        vpPager.setAdapter(new TweetPagerAdapter(getSupportFragmentManager()));
+        PagerSlidingTabStrip tabStrip = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+        tabStrip.setViewPager(vpPager);
 
-                populateTimeLine();
-            }
-        });
-// Configure the refreshing colors
-        swipeContainer.setColorSchemeResources(android.R.color.holo_blue_bright,
-                android.R.color.holo_green_light,
-                android.R.color.holo_orange_light,
-                android.R.color.holo_red_light);
+        tabStrip.setBackgroundColor(Color.argb(0xFF, 0xFF, 0xFF, 0xFF));
 
     }
 
-    private void populateTimeLine() {
-        myclient.getHomeTimeLine(new JsonHttpResponseHandler(){
-
-
-            public void onSuccess(int statusCode, Header[] headers, JSONArray json) {
-
-                Log.d("DEBUG",json.toString() );
-                atweet.addAll(Tweet.formJSONArray(json));
-                swipeContainer.setRefreshing(false);
-            }
-
-
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                Log.d("DEBUG",errorResponse.toString() );
-            }
-        });
+    public void onProfileView(MenuItem item) {
+        Intent in = new Intent(this, ProfileActivity.class);
+        startActivity(in);
 
     }
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -99,19 +62,51 @@ public class TimelineActivity extends ActionBarActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_tweet) {
+
             User current_user = TwitterApplication.getCurrentUser();
             Intent productIntent = new Intent(this, TweetActivity.class);
             productIntent.putExtra("current_user", current_user);
-            //Start Product Activity
+
             startActivity(productIntent);
+
         }
 
 
         return super.onOptionsItemSelected(item);
     }
 
+    //return order of the fregment in view pager
+    public class TweetPagerAdapter extends FragmentPagerAdapter {
 
+        private String tabTitles[] = {"Home", "Mentions"};
 
+        //adapter
+        public TweetPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
 
+        //order of the fragments
+        @Override
+        public Fragment getItem(int position) {
+            if (position == 0) {
+                return new HomeTimeLineFragment();
+            } else if (position == 1) {
+                return new MentionsTimeLineFragment();
+            } else {
+                return null;
+            }
+        }
 
+        // return tab title
+        @Override
+        public CharSequence getPageTitle(int position) {
+            return tabTitles[position];
+        }
+
+        //return how many fragments
+        @Override
+        public int getCount() {
+            return tabTitles.length;
+        }
+    }
 }
